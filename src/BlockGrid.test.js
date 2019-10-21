@@ -74,6 +74,18 @@ describe('BlockGrid', () => {
 
       clickCoordinates = { x: 1, y: 1 };
     });
+
+    it('can remove one block and all direct neighbours of the same colour', () => {
+      initialGrid = [
+        ['yellow', 'blue', 'yellow'],
+        ['blue', 'blue', 'blue'],
+        ['yellow', 'blue', 'yellow'],
+      ];
+
+      expectedGrid = [['yellow', 'yellow'], [], ['yellow', 'yellow']];
+
+      clickCoordinates = { x: 1, y: 1 };
+    });
   });
 
   xit('good luck, have fun!', () => {});
