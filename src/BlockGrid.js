@@ -21,14 +21,18 @@ class BlockGrid {
   }
 
   render(el = document.getElementById('gridEl')) {
-    for (let x = 0; x < this.width; x++) {
+    const grid = document.getElementById('gridEl');
+    while (grid.firstChild) {
+      grid.removeChild(grid.firstChild);
+    }
+    this.grid.forEach((column, x) => {
       const id = 'col_' + x;
       const colEl = document.createElement('div');
       colEl.id = id;
       colEl.className = 'col';
       el.appendChild(colEl);
 
-      for (let y = this.height - 1; y >= 0; y--) {
+      column.forEach((row, y) => {
         const block = this.grid[x][y];
         const id = `block_${x}x${y}`;
         const blockEl = document.createElement('div');
@@ -38,12 +42,24 @@ class BlockGrid {
         blockEl.style.background = block.colour;
         blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
         colEl.appendChild(blockEl);
-      }
-    }
+      });
+    });
+  }
+
+  updateGridIndexes() {
+    this.grid.forEach((column, x) => {
+      column.forEach((block, y) => {
+        block.x = x;
+        block.y = y;
+      });
+    });
   }
 
   blockClicked(e, block) {
-    console.log(e, block);
+    const { x, y } = block;
+    this.grid[x].splice(y, 1);
+    this.updateGridIndexes();
+    this.render();
   }
 }
 
