@@ -86,6 +86,24 @@ describe('BlockGrid', () => {
 
       clickCoordinates = { x: 1, y: 1 };
     });
+
+    it('can remove blocks of the same colour in a complex chain', () => {
+      initialGrid = [
+        ['blue', 'blue', 'yellow', 'white'],
+        ['blue', 'yellow', 'green', 'yellow'],
+        ['blue', 'blue', 'blue', 'blue'],
+        ['blue', 'blue', 'orange', 'blue'],
+      ];
+
+      expectedGrid = [
+        ['yellow', 'white'],
+        ['yellow', 'green', 'yellow'],
+        [],
+        ['orange'],
+      ];
+
+      clickCoordinates = { x: 2, y: 1 };
+    });
   });
 
   xit('good luck, have fun!', () => {});
