@@ -11,4 +11,9 @@ describe('Block', () => {
       expect(COLOURS).toContain(block.colour);
     });
   });
+
+  it('can create a block with a specific colour', () => {
+    const block = new Block(1, 2, 'colour');
+    expect(block.colour).toEqual('colour');
+  });
 });
