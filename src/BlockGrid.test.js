@@ -24,5 +24,10 @@ describe('BlockGrid', () => {
     });
   });
 
+
+  it("can remove one block", () => {
+    const grid = new BlockGrid(3,3).grid
+  });
+
   xit('good luck, have fun!', () => {});
 });
