@@ -24,9 +24,55 @@ describe('BlockGrid', () => {
     });
   });
 
+  describe('when block is clicked', () => {
+    const generateTestGrid = coloursGrid => {
+      const testGrid = [];
 
-  it("can remove one block", () => {
-    const grid = new BlockGrid(3,3).grid
+      coloursGrid.forEach((column, i) => {
+        const testColumn = [];
+        column.forEach((colour, j) => {
+          testColumn.push(new Block(i, j, colour));
+        });
+        testGrid.push(testColumn);
+      });
+
+      return testGrid;
+    };
+
+    let initialGrid;
+    let expectedGrid;
+    let clickCoordinates;
+
+    afterEach(() => {
+      const initial = generateTestGrid(initialGrid);
+      BlockGrid.prototype.generateGrid = function() {
+        this.grid = initial;
+      };
+
+      const { x, y } = clickCoordinates;
+      const clickTarget = initial[x][y];
+
+      const expected = generateTestGrid(expectedGrid);
+      const blockGrid = new BlockGrid(initial.length, initial[0].length);
+      blockGrid.blockClicked({}, clickTarget);
+      expect(blockGrid.grid).toEqual(expected);
+    });
+
+    it('can remove one block', () => {
+      initialGrid = [
+        ['blue', 'blue', 'blue'],
+        ['blue', 'yellow', 'blue'],
+        ['blue', 'blue', 'blue'],
+      ];
+
+      expectedGrid = [
+        ['blue', 'blue', 'blue'],
+        ['blue', 'blue'],
+        ['blue', 'blue', 'blue'],
+      ];
+
+      clickCoordinates = { x: 1, y: 1 };
+    });
   });
 
   xit('good luck, have fun!', () => {});
