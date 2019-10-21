@@ -28,6 +28,8 @@ class BlockGrid {
     this.grid.forEach((column, x) => {
       const id = 'col_' + x;
       const colEl = document.createElement('div');
+      colEl.style.width = `${100 / this.width}%`;
+
       colEl.id = id;
       colEl.className = 'col';
       el.appendChild(colEl);
@@ -40,6 +42,8 @@ class BlockGrid {
         blockEl.id = id;
         blockEl.className = 'block';
         blockEl.style.background = block.colour;
+        blockEl.style.height = `${100 / this.height}%`;
+
         blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
         colEl.appendChild(blockEl);
       });
