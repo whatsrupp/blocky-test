@@ -55,9 +55,58 @@ class BlockGrid {
     });
   }
 
-  blockClicked(e, block) {
+  deleteBlock(block) {
     const { x, y } = block;
     this.grid[x].splice(y, 1);
+  }
+
+  getBlockAt(x, y) {
+    return this.grid && this.grid[x] && this.grid[x][y];
+  }
+
+  getUnvisitedNeighboursOfSameColour(block) {
+    const { x, y, colour } = block;
+    const left = this.getBlockAt(x - 1, y);
+    const top = this.getBlockAt(x, y + 1);
+    const right = this.getBlockAt(x + 1, y);
+    const bottom = this.getBlockAt(x, y - 1);
+    const neighbours = [left, top, right, bottom];
+
+    const filtered = neighbours.reduce((acc, neighbour) => {
+      if (
+        neighbour &&
+        neighbour.colour === colour &&
+        !neighbour.willBeDeleted
+      ) {
+        acc.push(neighbour);
+      }
+      return acc;
+    }, []);
+    return filtered;
+  }
+
+  markBlockForDeletion(block) {
+    block.willBeDeleted = true;
+    const neighbours = this.getUnvisitedNeighboursOfSameColour(block);
+    neighbours.forEach(neighbour => {
+      this.markBlockForDeletion(neighbour);
+    });
+  }
+
+  deleteMarkedBlocks() {
+    this.grid.forEach((column, x) => {
+      for (let y = column.length - 1; y >= 0; y--) {
+        const block = column[y];
+        if (block.willBeDeleted) {
+          this.deleteBlock(block);
+        }
+      }
+    });
+  }
+
+  blockClicked(e, block) {
+    this.markBlockForDeletion(block);
+    this.deleteMarkedBlocks();
     this.updateGridIndexes();
     this.render();
   }
