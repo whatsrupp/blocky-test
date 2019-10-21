@@ -5,7 +5,7 @@ class BlockGrid {
     this.width = width;
     this.height = height;
     this.grid = [];
-
+    this.updatedColumns = new Set([]);
     this.generateGrid();
   }
 
@@ -34,24 +34,30 @@ class BlockGrid {
       colEl.className = 'col';
       el.appendChild(colEl);
 
-      column.forEach((row, y) => {
-        const block = this.grid[x][y];
-        const id = `block_${x}x${y}`;
-        const blockEl = document.createElement('div');
+      this.appendRowsToColumnElement(colEl, column, x);
+    });
+  }
 
-        blockEl.id = id;
-        blockEl.className = 'block';
-        blockEl.style.background = block.colour;
-        blockEl.style.height = `${100 / this.height}%`;
+  appendRowsToColumnElement(colEl, column, x) {
+    column.forEach((row, y) => {
+      const block = this.grid[x][y];
+      const id = `block_${x}x${y}`;
+      const blockEl = document.createElement('div');
 
-        blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
-        colEl.appendChild(blockEl);
-      });
+      blockEl.id = id;
+      blockEl.className = 'block';
+      blockEl.style.background = block.colour;
+      blockEl.style.height = `${100 / this.height}%`;
+
+      blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
+      colEl.appendChild(blockEl);
     });
   }
 
   updateGridIndexes() {
-    this.grid.forEach((column, x) => {
+    this.updatedColumns.forEach(x => {
+      const column = this.grid[x];
+
       column.forEach((block, y) => {
         block.x = x;
         block.y = y;
@@ -91,6 +97,7 @@ class BlockGrid {
 
   markBlockForDeletion(block) {
     block.willBeDeleted = true;
+    this.updatedColumns.add(block.x);
     const neighbours = this.getUnvisitedNeighboursOfSameColour(block);
     neighbours.forEach(neighbour => {
       this.markBlockForDeletion(neighbour);
@@ -108,11 +115,29 @@ class BlockGrid {
     });
   }
 
+  updateDom() {
+    this.updatedColumns.forEach(x => {
+      const columnElement = document.getElementById(`col_${x}`);
+      while (columnElement.firstChild) {
+        columnElement.removeChild(columnElement.firstChild);
+      }
+
+      const column = this.grid[x];
+
+      this.appendRowsToColumnElement(columnElement, column, x);
+    });
+  }
+
+  resetInternalState() {
+    this.updatedColumns = new Set([]);
+  }
+
   blockClicked(e, block) {
     this.markBlockForDeletion(block);
     this.deleteMarkedBlocks();
     this.updateGridIndexes();
-    this.render();
+    this.updateDom();
+    this.resetInternalState();
   }
 }
 

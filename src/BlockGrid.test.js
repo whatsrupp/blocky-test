@@ -46,6 +46,8 @@ describe('BlockGrid', () => {
     afterEach(() => {
       const initial = generateTestGrid(initialGrid);
       BlockGrid.prototype.render = jest.fn();
+      BlockGrid.prototype.updateDom = jest.fn();
+
       BlockGrid.prototype.generateGrid = function() {
         this.grid = initial;
       };
