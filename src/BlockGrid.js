@@ -20,37 +20,36 @@ class BlockGrid {
     }
   }
 
-  render(el = document.getElementById('gridEl')) {
-    const grid = document.getElementById('gridEl');
-    while (grid.firstChild) {
-      grid.removeChild(grid.firstChild);
-    }
+  renderInitialGrid() {
+    const gridElement = document.getElementById('gridEl');
     this.grid.forEach((column, x) => {
       const id = 'col_' + x;
-      const colEl = document.createElement('div');
-      colEl.style.width = `${100 / this.width}%`;
+      const columnElement = document.createElement('div');
+      columnElement.style.width = `${100 / this.width}%`;
 
-      colEl.id = id;
-      colEl.className = 'col';
-      el.appendChild(colEl);
+      columnElement.id = id;
+      columnElement.className = 'col';
+      gridElement.appendChild(columnElement);
 
-      this.appendRowsToColumnElement(colEl, column, x);
+      this.appendRowsToColumnElement(columnElement, column, x);
     });
   }
 
-  appendRowsToColumnElement(colEl, column, x) {
+  appendRowsToColumnElement(columnElement, column, x) {
     column.forEach((row, y) => {
       const block = this.grid[x][y];
       const id = `block_${x}x${y}`;
-      const blockEl = document.createElement('div');
+      const blockElement = document.createElement('div');
 
-      blockEl.id = id;
-      blockEl.className = 'block';
-      blockEl.style.background = block.colour;
-      blockEl.style.height = `${100 / this.height}%`;
+      blockElement.id = id;
+      blockElement.className = 'block';
+      blockElement.style.background = block.colour;
+      blockElement.style.height = `${100 / this.height}%`;
 
-      blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
-      colEl.appendChild(blockEl);
+      blockElement.addEventListener('click', evt =>
+        this.blockClicked(evt, block)
+      );
+      columnElement.appendChild(blockElement);
     });
   }
 
@@ -128,7 +127,7 @@ class BlockGrid {
     });
   }
 
-  resetInternalState() {
+  cleanUpState() {
     this.updatedColumns = new Set([]);
   }
 
@@ -137,7 +136,7 @@ class BlockGrid {
     this.deleteMarkedBlocks();
     this.updateGridIndexes();
     this.updateDom();
-    this.resetInternalState();
+    this.cleanUpState();
   }
 }
 
